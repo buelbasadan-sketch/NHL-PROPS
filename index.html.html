@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NHL · Pronóstico de puntos V4</title>
+<style>
+:root{--bg:#eef2f7;--cd:#fff;--tx:#0f1b2d;--mu:#5d6b82;--bd:#d5dde9;--ac:#0b5fd6;--gd:#0f8a4b;--rd:#c0392b;--am:#d98a00;--hd:#0f1b2d;--ht:#e8eefb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--cd:#141d2f;--tx:#e6ecf7;--mu:#97a5bf;--bd:#27344d;--ac:#6ea6ff;--gd:#4cd38a;--rd:#ff8070;--am:#f2b441;--hd:#070c16;--ht:#e6ecf7}}
+:root[data-theme="dark"]{--bg:#0b1220;--cd:#141d2f;--tx:#e6ecf7;--mu:#97a5bf;--bd:#27344d;--ac:#6ea6ff;--gd:#4cd38a;--rd:#ff8070;--am:#f2b441;--hd:#070c16;--ht:#e6ecf7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 Arial,Helvetica,sans-serif}
+header{background:var(--hd);color:var(--ht);padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center}
+h1{font-size:19px;margin:0;font-weight:700}
+nav{display:flex;gap:6px}
+nav button{background:transparent;color:var(--ht);border:1px solid #ffffff44;border-radius:6px;padding:6px 14px;font:inherit;cursor:pointer}
+nav button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--am);outline-offset:2px}
+main{padding:16px 18px;max-width:1500px;margin:0 auto}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px}
+.k{background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:10px 12px}
+.k small{color:var(--mu);display:block}.k b{font-size:20px}.k span{font-size:12px;color:var(--mu)}
+.al{background:var(--cd);border:1px solid var(--bd);border-left:4px solid var(--am);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:13px}
+.al div{margin:2px 0}
+.ct{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+select,input[type=text],textarea{background:var(--cd);color:var(--tx);border:1px solid var(--bd);border-radius:6px;padding:6px 8px;font:inherit}
+.tw{overflow-x:auto;background:var(--cd);border:1px solid var(--bd);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:1180px}
+th,td{padding:6px 8px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--bd)}
+th{background:var(--hd);color:var(--ht);position:sticky;top:0;font-weight:700}
+th:nth-child(2),td:nth-child(2),th:nth-child(3),td:nth-child(3),th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5),th:last-child,td:last-child{text-align:left}
+td:nth-child(2){font-weight:700}
+.pb{display:inline-block;width:90px;height:9px;background:var(--bd);border-radius:5px;vertical-align:middle;margin-left:6px;overflow:hidden}
+.pb i{display:block;height:100%;background:var(--ac)}
+.sb{display:inline-flex;width:70px;height:9px;background:var(--bd);border-radius:5px;overflow:hidden;vertical-align:middle}
+.g{color:var(--gd);font-weight:700}.r{color:var(--rd);font-weight:700}.m{color:var(--mu)}
+.pill{padding:1px 7px;border-radius:9px;font-size:12px;border:1px solid var(--bd)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.cd{background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:12px}
+.cd small{display:block;color:var(--mu);margin:2px 0 8px}
+.cd input{max-width:100%}
+.ok{color:var(--gd);font-weight:700}.no{color:var(--mu)}
+.nok{background:var(--rd)!important;color:var(--bg)!important;border-color:var(--rd)!important}.yes{background:var(--gd)!important;color:var(--bg)!important;border-color:var(--gd)!important}button[data-a]{background:var(--cd);color:var(--tx);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font:inherit;cursor:pointer}
+h2{font-size:16px;margin:16px 0 8px}
+.fi{width:78px;padding:2px 4px;font-size:12px}
+th[data-s]:hover{text-decoration:underline}
+#cx{background:var(--cd);color:var(--tx);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;font:inherit;cursor:pointer}
+p,li{max-width:90ch}
+</style></head><body>
+<header><h1>NHL · Pronóstico de puntos V4</h1><nav id="nav"></nav></header>
+<main id="app"></main>
+<script>
+const SL=[['p55','Jugadores 5v5','PLAYERS 5V5'],['p54','Jugadores 5v4 PP','PLAYERS 5V4 PP'],['hh','Partidos H to H (opcional)','H to H'],['un','Unidades PP y porteros (formato ancho, opcional)','H to H + UND PP 1 - 2'],['t55','Equipos 5v5 SVA','TEAM 5V5 SVA'],['t54','Equipos 5v4 (power play)','TEAM STAT 5V4'],['t45','Equipos 4v5 (penal killing)','TEAM STAT 4V5'],['g55','Porteros 5v5 SVA','PORTEROS 5V5 SVA'],['g45','Porteros 4v5','PORTEROS 4V5'],['h55','Histórico 5v5 (opcional)','5V5 2025-2026'],['h54','Histórico 5v4 (opcional)','5v4 2025-2026']];
+const NM={"anaheim ducks":"ANA","boston bruins":"BOS","buffalo sabres":"BUF","calgary flames":"CGY","carolina hurricanes":"CAR","chicago blackhawks":"CHI","colorado avalanche":"COL","columbus blue jackets":"CBJ","dallas stars":"DAL","detroit red wings":"DET","edmonton oilers":"EDM","florida panthers":"FLA","los angeles kings":"LA","minnesota wild":"MIN","montreal canadiens":"MTL","nashville predators":"NSH","new jersey devils":"NJ","new york islanders":"NYI","new york rangers":"NYR","ottawa senators":"OTT","philadelphia flyers":"PHI","pittsburgh penguins":"PIT","san jose sharks":"SJ","seattle kraken":"SEA","st louis blues":"STL","tampa bay lightning":"TB","toronto maple leafs":"TOR","utah mammoth":"UTA","utah hockey club":"UTA","vancouver canucks":"VAN","vegas golden knights":"VGK","washington capitals":"WSH","winnipeg jets":"WPG"};
+const AB=new Set(Object.values(NM));
+const cl=(x,a,b)=>Math.min(b,Math.max(a,x)),n=v=>{const x=parseFloat(v);return isNaN(x)?0:x},mean=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
+const N=s=>String(s==null?'':s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[.'’]/g,'').trim().toLowerCase();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ab=x=>{x=String(x||'').split(',').pop();const k=N(x);if(NM[k])return NM[k];const u=k.toUpperCase().replace(/\s/g,'');return AB.has(u)?u:null};
+const st={g:k=>{try{return localStorage.getItem('nhl4_'+k)}catch(e){return null}},s:(k,v)=>{try{localStorage.setItem('nhl4_'+k,v)}catch(e){}}};
+function csv(t){const R=[];let r=[],f='',q=false;t=t.replace(/^\uFEFF/,'');const h1=t.split(/\r?\n/)[0],dl=(h1.match(/;/g)||[]).length>(h1.match(/,/g)||[]).length?';':',';for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}else if(c=='"')q=true;else if(c==dl){r.push(f);f=''}else if(c=='\n'||c=='\r'){if(c=='\r'&&t[i+1]=='\n')i++;r.push(f);R.push(r);r=[];f=''}else f+=c}if(f!==''||r.length){r.push(f);R.push(r)}return R.filter(x=>x.some(v=>v.trim()!==''))}
+function tbl(t){const R=csv(t),h=R[0].map(x=>x.trim());return R.slice(1).map(r=>{const o={};h.forEach((k,i)=>o[k]=(r[i]==null?'':r[i]).trim());return o})}
+function plist(rows){const m={};for(const r of rows){if(!r.Player)continue;const pos=(r.Position||'').trim(),k=N(r.Player)+'|'+pos;const o={name:r.Player.trim(),pos,g:pos=='D'?'D':'F',team:ab(r.Team),gp:n(r.GP),toi:n(r.TOI),tgp:n(r['TOI/GP']),G:n(r['Goals/60']),A1:n(r['First Assists/60']),A2:n(r['Second Assists/60']),m:[n(r['Shots/60']),n(r['ixG/60']),n(r['iSCF/60']),n(r['iHDCF/60'])]};if(!m[k]||o.toi>m[k].toi)m[k]=o}return m}
+function units(t){const G={},O=[];for(const r of csv(t).slice(1)){const v=r.map(x=>(x||'').trim()),[pt,eq,tp,c,lw]=v;const a=ab(eq);if(!a)continue;if(!G[pt]){G[pt]=[];O.push(pt)}let T=G[pt].find(x=>x.ab==a);if(!T){T={ab:a,PP1:[],PP2:[],gk:'',gs:''};G[pt].push(T)}if(/^portero/i.test(tp)){T.gk=c;T.gs=lw}else if(/^PP[12]$/i.test(tp)){const L=/^power play/i.test(c)?v.slice(5,10):v.slice(3,8);T[tp.toUpperCase()]=L.filter(x=>x&&x!='-')}}return O.map(k=>G[k]).filter(g=>g.length>1)}
+const TG=/\s+(IR-LT|LTIR|IR|DTD|OUT)$/i;
+const pn=raw=>{const m=raw.match(TG);return{tag:m?m[1].toUpperCase():'',nm:raw.replace(TG,'').trim()}};
+function mt(nm,p){const t=N(nm).split(' '),q=N(p.name).split(' ');return t[t.length-1]==q[q.length-1]&&(t[0].length>1?t[0]==q[0]:t[0][0]==q[0][0])}
+function gavg(m){const a={F:{T:0,G:0,A1:0,A2:0,tg:0,m:[0,0,0,0]},D:{T:0,G:0,A1:0,A2:0,tg:0,m:[0,0,0,0]}};for(const p of Object.values(m)){const x=a[p.g],w=p.toi;x.T+=w;x.G+=p.G*w;x.A1+=p.A1*w;x.A2+=p.A2*w;x.tg+=p.tgp*w;p.m.forEach((v,i)=>x.m[i]+=v*w)}for(const g of['F','D']){const x=a[g],T=x.T||1;x.G/=T;x.A1/=T;x.A2/=T;x.tgp=x.tg/T;x.m=x.m.map(v=>v/T)}return a}
+// Modelo por situación: índice de tiro (regresado, con prior histórico al 60%) + goles + A1 regresada + A2 por rol
+function sit(cur,hist,s,rm){const W=s=='55'?[.5,.1,.3,.1]:[.2,.25,.3,.25],KI=s=='55'?200:90,KG=s=='55'?1000:250,KA={F:s=='55'?1150:164,D:s=='55'?700:1000};const ac=gavg(cur),ah=hist?gavg(hist):null,o={};
+const ix=(p,v)=>W.reduce((q,w,i)=>q+w*(v.m[i]>0?Math.min(3,p.m[i]/v.m[i]):1),0);
+for(const k in cur){const p=cur[k],h=hist&&hist[k],v=ac[p.g],Th=h?.6*h.toi:0,Ic=ix(p,v),Ih=h?ix(h,ah[h.g]):1,ia=(p.toi*Ic+Th*Ih+KI)/(p.toi+Th+KI);const wt=p.gp/(p.gp+10),tb=h&&h.tgp?wt*p.tgp+(1-wt)*h.tgp:p.tgp,r=rm(k,p,v,tb),T=p.toi+Th;
+const g=(p.toi*p.G+Th*(h?h.G:0)+KG*v.G*ia)/(T+KG),a1=(p.toi*p.A1+Th*(h?h.A1:0)+KA[p.g]*v.A1*r)/(T+KA[p.g]);o[k]={g,a:a1+v.A2*r,t:tb,h:!!h}}return o}
+function tidx(rows,K,gm){const M=['xGA/60','HDCA/60','SCA/60','SA/60','GA/60'],W=[.35,.15,.15,.15,.2],mu=M.map(c=>mean(rows.map(r=>n(r[c])))),o={};for(const r of rows){const a=ab(r.Team);if(!a)continue;const raw=M.reduce((s,c,i)=>s+W[i]*(mu[i]?n(r[c])/mu[i]:1),0),b=gm?n(r.GP):n(r.GP)*n(r['TOI/GP']),w=b/(b+K);o[a]={i:w*raw+1-w,gp:n(r.GP)}}return o}
+function gmap(rows){const o={};for(const r of rows||[]){const a=ab(r.Team);if(!a)continue;(o[a]=o[a]||[]).push({nm:N(r.Player).split(' '),toi:n(r.TOI),gs:n(r['GSAA/60'])})}return o}
+function gfind(M,a,raw){const x=M[a];if(!x||!raw)return null;const t=N(raw.replace(/\(.*\)/,'')).split(' ');return x.filter(g=>g.nm[g.nm.length-1]==t[t.length-1]&&(t[0].length>1?g.nm[0]==t[0]:g.nm[0][0]==t[0][0])).sort((p,q)=>q.toi-p.toi)[0]||null}
+const gf=(g,K,lg)=>g?cl(1-g.toi/(g.toi+K)*g.gs/lg,.9,1.1):1;
+const D={},P={};let tab='dash';const C={n:40,sk:'p1',sd:-1,f:{},team:'',rev:false,q:''};
+const RK={Alta:3,Media:2,Baja:1};
+const CD=[{k:'name',l:'Jugador',t:'t'},{k:'T',l:'Eq.',t:'t'},{k:'pos',l:'Pos',t:'t'},{k:'o',l:'Rival',t:'t'},{k:'u',l:'PP',t:'t'},{k:'L',l:'Pts esp.'},{k:'p1',l:'P(≥1 pt)',m:100},{k:'p2',l:'P(≥2)',m:100},{k:'q',l:'Cuota justa',f:r=>r.p1,nf:1},{k:'g',l:'Goles | Asist.'},{k:'c5',l:'5v5'},{k:'c4',l:'5v4'},{k:'t5',l:'TOI 5v5'},{k:'t4',l:'TOI 5v4'},{k:'d',l:'Def rival',m:100},{k:'k',l:'PK rival',m:100},{k:'gs',l:'Portero GSAA'},{k:'conf',l:'Conf.',t:'t',sg:r=>RK[r.conf]},{k:'av',l:'Aviso',t:'t'}];
+function cv(r,c,so){if(so&&c.sg)return c.sg(r);const v=c.f?c.f(r):r[c.k];if(c.t=='t')return N(v);return v==null?null:v*(c.m||1)}
+function fok(r,c){const s=(C.f[c.k]||'').trim().replace(',','.');if(!s||c.nf)return true;const v=cv(r,c);if(c.t=='t')return v.includes(N(s));if(v==null)return false;let m=s.match(/^(>=|<=|>|<|=)?\s*(-?[\d.]+)$/);if(m){const x=+m[2],o=m[1]||'>=';return o=='>='?v>=x:o=='<='?v<=x:o=='>'?v>x:o=='<'?v<x:v==x}m=s.match(/^(-?[\d.]+)\s*-\s*(-?[\d.]+)$/);return m?v>=+m[1]&&v<=+m[2]:true}
+function hhgames(rows){const G=[];for(const r of rows){const v=Object.values(r)[0]||'',p=v.split(/\s+vs\.?\s+/i);if(p.length<2)continue;const a=ab(p[0]),b=ab(p[1]);if(!a||!b)continue;G.push([{ab:a,PP1:[],PP2:[],gk:(r['Portero Visitante']||'').trim(),gs:''},{ab:b,PP1:[],PP2:[],gk:(r['Portero Local']||'').trim(),gs:''}])}return G}
+function parse(k,t){let rows;if(k=='un')rows=units(t);else if(k=='hh'){rows=hhgames(tbl(t));if(!rows.length)rows=units(t)}else{rows=tbl(t);if(['p55','p54','h55','h54'].includes(k))rows=plist(rows)}P[k]=rows;return Array.isArray(rows)?rows.length:Object.keys(rows).length}
+async function rd(f){const b=await f.arrayBuffer();try{return new TextDecoder('utf-8',{fatal:true}).decode(b)}catch(e){return new TextDecoder('windows-1252').decode(b)}}
+async function load(k,t){try{const c=parse(k,t);D[k]={n:c};st.s(k,t)}catch(e){delete D[k];delete P[k];alert('No se pudo leer el archivo '+k+': revisa que sea CSV separado por comas con encabezados.')}render()}
+function run(){if(!P.p55||!P.p54)return null;const AL=[],GM=(P.hh&&P.hh.length)?P.hh:(P.un||[]);
+const t55=P.t55?tidx(P.t55,20,1):{},t45=P.t45?tidx(P.t45,150,0):{},ppT={},pkT={};
+for(const r of P.t54||[]){const a=ab(r.Team);if(a)ppT[a]=n(r['TOI/GP'])}for(const r of P.t45||[]){const a=ab(r.Team);if(a)pkT[a]=n(r['TOI/GP'])}
+const lgPP=mean(Object.values(ppT))||5.2,lgPK=mean(Object.values(pkT))||5.2,lg5=P.t55?mean(P.t55.map(r=>n(r['GA/60']))):2.5,lg4=P.t45?mean(P.t45.map(r=>n(r['GA/60']))):8.2;
+const G5=gmap(P.g55),G4=gmap(P.g45),opp={},UT={};
+const UU={};(P.un||[]).forEach(g=>g.forEach(t=>UU[t.ab]=t));GM.forEach(g=>{const[v,l]=g;for(const t of g){const u=UU[t.ab];if(u&&t!==u){t.PP1=u.PP1;t.PP2=u.PP2;if(!t.gk)t.gk=u.gk}}opp[v.ab]={o:l.ab,h:0,O:l};opp[l.ab]={o:v.ab,h:1,O:v};UT[v.ab]=v;UT[l.ab]=l});
+const ro={};for(const k in P.p55)ro[k]={a:P.p55[k],team:P.p55[k].team};for(const k in P.p54){ro[k]=ro[k]||{team:P.p54[k].team};ro[k].b=P.p54[k]}
+const bt={};for(const k in ro)(bt[ro[k].team]=bt[ro[k].team]||[]).push(ro[k].a||ro[k].b);
+const UM={};for(const k in ro){const T=UT[ro[k].team],p=ro[k].a||ro[k].b;if(!T)continue;for(const u of['PP1','PP2']){let f=0;for(const raw of T[u]){const{nm,tag}=pn(raw);if(mt(nm,p)){UM[k]={u,tag};f=1;break}}if(f)break}}
+const nf=[];for(const a in UT)for(const u of['PP1','PP2'])for(const raw of UT[a][u])if(!(bt[a]||[]).some(p=>mt(pn(raw).nm,p)))nf.push(a+' '+raw);
+const m55=sit(P.p55,P.h55,'55',(k,p,v,tb)=>cl(tb/v.tgp,.6,1.7)),m54=sit(P.p54,P.h54,'54',(k,p,v,tb)=>{const u=UM[k]&&UM[k].u;return u=='PP1'?1.25:u=='PP2'?.75:cl(tb/v.tgp,.5,1.5)});
+const ex=new Set((st.g('ex')||'').split('\n').map(N).filter(Boolean)),tgp={};for(const k in P.p55){const p=P.p55[k];tgp[p.team]=Math.max(tgp[p.team]||0,p.gp)}
+const R=[];let out=0;const gmiss=[];
+for(const k in ro){const r=ro[k],T=r.team,O=opp[T]||(GM.length?null:{o:'',h:0,O:{gk:''}});if(!O)continue;const a=r.a,b=r.b,p=a||b,gp=Math.max(a?a.gp:0,b?b.gp:0);if(gp<5)continue;
+const ui=UM[k],o=O.o,gk=O.O.gk,g5=gfind(G5,o,gk),g4=gfind(G4,o,gk);if(gk&&!g5&&P.g55&&!gmiss.includes(o+' '+gk))gmiss.push(o+' '+gk);
+if((ui&&/IR|OUT/.test(ui.tag))||ex.has(N(p.name))){out++;continue}
+const fd=(t55[o]?t55[o].i:1)*gf(g5,1500,lg5),fk=(t45[o]?t45[o].i:1)*gf(g4,200,lg4),av=[];
+let t5=0,g5v=0,a5v=0,t4=0,g4v=0,a4v=0,rev=false;
+if(m55[k]){const m=m55[k];t5=m.t;const w=t5/60*fd;g5v=w*m.g;a5v=w*m.a}
+if(m54[k]){const m=m54[k];if(ppT[T]){let s=m.t/ppT[T];if(ui)s=.5*s+.5*(ui.u=='PP1'?.67:.39);else if(UT[T]&&UT[T].PP1.length){if(s>=.4){rev=true;av.push('REVISAR: rol PP grande y fuera de PP1/PP2')}else s*=.6}t4=s*((ppT[T]+(pkT[o]||lgPK))/2)}else t4=m.t;const w=t4/60*fk;g4v=w*m.g;a4v=w*m.a}
+if(ui&&ui.tag=='DTD')av.push('DTD');const tg=tgp[T]||gp;if(gp<.7*tg)av.push('PJ '+gp+' de '+tg+': ¿regreso o lesión?');
+const hh=(m55[k]&&m55[k].h)||(m54[k]&&m54[k].h);if(P.h55&&!hh)av.push('Sin histórico');
+const L=g5v+a5v+g4v+a4v;if(!(L>0))continue;const p1=1-Math.exp(-L),conf=(hh?1:0)+(gp>=.8*tg?1:0)+(ui?1:0);
+R.push({name:p.name,T,pos:p.pos,o,h:O.h,u:ui?ui.u:'',L,p1,p2:1-Math.exp(-L)*(1+L),g:g5v+g4v,a:a5v+a4v,c5:g5v+a5v,c4:g4v+a4v,t5,t4,d:t55[o]?t55[o].i:null,k:t45[o]?t45[o].i:null,gs:g5?g5.gs:null,conf:conf>=3?'Alta':conf==2?'Media':'Baja',rev,av:av.join('; ')})}
+if(!P.h55)AL.push('Sin histórico 5v5: se usa prior por rol (menos precisión con pocos partidos).');
+if(P.t55&&P.t54&&Math.abs(mean(P.t54.map(r=>n(r['TOI/GP'])))-mean(P.t55.map(r=>n(r['TOI/GP']))))<1)AL.push('TEAM 5v4 parece una copia de TEAM 5v5 (mismo TOI/GP). Reexporta con el filtro de situación.');
+if(P.t55&&P.t54){const a=tmapGP(P.t55),b=tmapGP(P.t54);const c=Object.keys(a).filter(x=>b[x]!=null&&a[x]!=b[x]).length;if(c)AL.push('Fechas distintas: '+c+' equipos tienen distinto PJ entre TEAM 5v5 y TEAM 5v4.')}
+if(P.t55){const a=tmapGP(P.t55);const c=Object.keys(tgp).filter(x=>a[x]!=null&&a[x]!=tgp[x]).length;if(c>3)AL.push('Los PJ de jugadores no coinciden con TEAM 5v5 en '+c+' equipos (exportaciones de distinta fecha).')}
+for(const h of['h55','h54'])if(P[h]){const c=Object.values(P[h]).filter(p=>p.gp>82).length;if(c)AL.push('Histórico '+h+': '+c+' filas con más de 82 PJ (¿playoffs mezclados?).')}
+if(!P.t54||!P.t45)AL.push('Falta TEAM 5v4 o 4v5: sin minutos de power play ni penal killing del rival.');
+if(!P.g55)AL.push('Sin porteros: factor de portero neutro.');
+if(nf.length)AL.push('Unidades PP sin match en jugadores ('+nf.length+'): '+nf.slice(0,6).join(', ')+(nf.length>6?'…':''));
+if(gmiss.length)AL.push('Porteros no encontrados (factor neutro): '+gmiss.join(', '));
+if(out)AL.push(out+' jugadores excluidos por IR, IR-LT, OUT o lista manual.');
+if(!GM.length)AL.push('Sin partidos cargados (H to H o unidades PP): pronóstico base de toda la liga, sin rival ni portero.');return{R,AL,G:GM.length}}
+const tmapGP=rows=>{const o={};for(const r of rows){const a=ab(r.Team);if(a)o[a]=n(r.GP)}return o};
+const f2=x=>x.toFixed(2),pc=x=>(100*x).toFixed(1)+'%';
+const am=p=>{const d=1/p;return d>=2?'+'+Math.round((d-1)*100):''+Math.round(-100/(d-1))};
+function dash(){const X=run();if(!X)return`<div class="al"><div>Carga como mínimo Jugadores 5v5 y Jugadores 5v4 en la pestaña Cargar datos.</div></div>`;
+let L=X.R.filter(r=>(C.rev||!r.rev)&&(!C.team||r.T==C.team||r.o==C.team)&&(!C.q||N(r.name).includes(N(C.q)))&&CD.every(c=>fok(r,c)));const cs=CD.find(c=>c.k==C.sk)||CD[6];L.sort((a,b)=>{const x=cv(a,cs,1),y=cv(b,cs,1);return(typeof x=='string'?x.localeCompare(y):(x==null?-1e9:x)-(y==null?-1e9:y))*C.sd});const all=X.R.filter(r=>C.rev||!r.rev).sort((a,b)=>b.p1-a.p1),top=L.slice(0,C.n),mx=Math.max(...top.map(r=>r.L),.1);
+const teams=[...new Set(X.R.flatMap(r=>[r.T,r.o]))].filter(Boolean).sort(),weak=X.R.filter(r=>r.d!=null).sort((a,b)=>b.d-a.d)[0];
+const ld=all[0];
+const k=(a,b,c)=>`<div class="k"><small>${a}</small><b>${b}</b><br><span>${c||'&nbsp;'}</span></div>`;
+const idc=(v,hi,lo)=>v==null?'<span class="m">–</span>':`<span class="${v*100>=hi?'g':v*100<=lo?'r':''}">${Math.round(v*100)}</span>`;
+return`<div class="kp">${k('Partidos hoy',X.G)}${k('Jugadores evaluados',X.R.length)}${k('Líder del día',ld?esc(ld.name):'–',ld?pc(ld.p1)+' de ≥1 pt':'')}${k('Prob. media del Top '+C.n,top.length?pc(mean(top.map(r=>r.p1))):'–','de al menos 1 punto')}${k('Defensa más débil hoy',weak?weak.o:'–',weak?'índice '+Math.round(weak.d*100):'')}</div>
+${X.AL.length?`<div class="al">${X.AL.map(a=>'<div>'+esc(a)+'</div>').join('')}</div>`:''}
+<div class="ct"><label>Mostrar <select id="cn">${[25,40,60,100].map(v=>`<option${v==C.n?' selected':''}>${v}</option>`).join('')}</select></label>
+<button id="cx">Limpiar filtros</button>
+<label>Equipo <select id="ct"><option value="">Todos</option>${teams.map(t=>`<option${t==C.team?' selected':''}>${t}</option>`).join('')}</select></label>
+<input type="text" id="cq" placeholder="Buscar jugador" value="${esc(C.q)}"><label><input type="checkbox" id="cr"${C.rev?' checked':''}> Incluir jugadores a revisar</label></div>
+<div class="tw"><table><thead><tr><th>#</th>${CD.map(c=>`<th data-s="${c.k}" style="cursor:pointer">${c.l}${C.sk==c.k?(C.sd<0?' ▼':' ▲'):''}</th>`).join('')}</tr><tr><th></th>${CD.map(c=>`<th>${c.nf?'':`<input type="text" class="fi" data-f="${c.k}" value="${esc(C.f[c.k]||'')}" placeholder="${c.t=='t'?'contiene':'>=0'}">`}</th>`).join('')}</tr></thead><tbody>
+${top.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.name)}</td><td>${r.T}</td><td>${esc(r.pos)}</td><td>${r.o?(r.h?'vs':'@')+' '+r.o:'–'}</td><td>${r.u||'<span class="m">–</span>'}</td><td><b>${f2(r.L)}</b></td><td><b>${pc(r.p1)}</b><span class="pb"><i style="width:${Math.min(100,r.p1*100)}%"></i></span></td><td>${pc(r.p2)}</td><td>${am(r.p1)}</td><td><span class="sb"><i style="width:${r.g/mx*70}px;background:var(--ac)"></i><i style="width:${r.a/mx*70}px;background:var(--am)"></i></span> ${f2(r.g)} | ${f2(r.a)}</td><td>${f2(r.c5)}</td><td>${f2(r.c4)}</td><td>${r.t5.toFixed(1)}</td><td>${r.t4.toFixed(1)}</td><td>${idc(r.d,104,96)}</td><td>${idc(r.k,104,96)}</td><td>${r.gs==null?'<span class="m">–</span>':(r.gs>0?'+':'')+r.gs.toFixed(2)}</td><td><span class="pill">${r.conf}</span></td><td class="${r.rev?'r':'m'}">${esc(r.av)}</td></tr>`).join('')}</tbody></table></div>
+<p class="m">Pts esp. = goles + asistencias esperadas para el partido de hoy (5v5 + 5v4). P(≥1 pt) = 1 − e^(−pts esp.). Cuota justa en formato americano. Def y PK rival: 100 = promedio; verde ≥104 (defensa débil, favorece al jugador), rojo ≤96. Haz clic en un encabezado para ordenar. En la fila de filtros escribe texto o números (>=60, <3, 2-5; los porcentajes van de 0 a 100) y pulsa Enter.</p>`}
+const TK={gs:0,ix:103,t5:14,t4:2,p:60,max:6};
+function tk(){const X=run();if(!X)return`<div class="al"><div>Carga primero Jugadores 5v5, Jugadores 5v4, partidos y porteros en la pestaña Cargar datos.</div></div>`;
+const I=(k,l)=>`<label>${l} <input type="text" class="ti" data-k="${k}" value="${TK[k]}" style="width:56px"></label>`;
+const L=X.R.filter(r=>!r.rev&&r.gs!=null&&r.gs<TK.gs&&r.d!=null&&r.k!=null&&(r.d+r.k)*50>TK.ix&&r.t5>TK.t5&&r.t4>TK.t4&&r.p1*100>TK.p).sort((a,b)=>a.gs-b.gs||b.p1-a.p1),T=L.slice(0,TK.max),pr=T.reduce((s,r)=>s*r.p1,1);
+const k=(a,b,c)=>`<div class="k"><small>${a}</small><b>${b}</b><br><span>${c||'&nbsp;'}</span></div>`;
+return`<div class="ct">${I('gs','GSAA portero <')}${I('ix','Prom. Def/PK >')}${I('t5','TOI 5v5 >')}${I('t4','TOI 5v4 >')}${I('p','P(≥1 pt) % >')}${I('max','Máx. selecciones')}</div>
+<div class="kp">${k('Ticket',T.length+' selecciones','Over 0.5 puntos (1 o más)')}${k('Prob. combinada',T.length?pc(pr):'–','suponiendo independencia')}${k('Cuota justa combinada',T.length?am(pr):'–',T.length?(1/pr).toFixed(2)+' decimal':'')}${k('Cumplen los criterios',L.length,'de '+X.R.length+' evaluados')}</div>
+${T.length?`<div class="tw"><table style="min-width:900px"><thead><tr><th>#</th><th>Jugador</th><th>Eq.</th><th>Rival</th><th>Portero GSAA</th><th>Def rival</th><th>PK rival</th><th>Prom. Def/PK</th><th>TOI 5v5</th><th>TOI 5v4</th><th>P(≥1 pt)</th><th>Cuota justa</th></tr></thead><tbody>${T.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.name)}</td><td>${r.T}</td><td>${r.h?'vs':'@'} ${r.o}</td><td class="g">${r.gs.toFixed(2)}</td><td>${Math.round(r.d*100)}</td><td>${Math.round(r.k*100)}</td><td><b>${((r.d+r.k)*50).toFixed(1)}</b></td><td>${r.t5.toFixed(1)}</td><td>${r.t4.toFixed(1)}</td><td><b>${pc(r.p1)}</b></td><td>${am(r.p1)}</td></tr>`).join('')}</tbody></table></div>`:`<div class="al"><div>Ningún jugador cumple los criterios con los datos cargados. Revisa que estén cargados porteros, equipos 5v5 y 4v5 y los partidos del día.</div></div>`}
+<p class="m">Los jugadores van del portero rival más negativo (GSAA/60) al menos negativo. La probabilidad combinada multiplica las individuales y es optimista si hay jugadores del mismo partido, porque sus resultados se correlacionan. Con pocos partidos jugados, los índices y el GSAA son ruidosos.</p>`}
+function cp(){const X=run();if(!X||!X.G)return`<div class="al"><div>Carga Jugadores 5v5, Jugadores 5v4 y los partidos del día (H to H o unidades PP) para que Claude arme el ticket.</div></div>`;
+const sc=r=>r.p1+.5*((r.d!=null&&r.k!=null?(r.d+r.k)/2:1)-1)+(r.gs!=null?cl(-r.gs,0,1.5)*.02:0)+(r.u=='PP1'?.02:0)+(r.conf=='Alta'?.02:r.conf=='Baja'?-.03:0);
+let C0=X.R.filter(r=>!r.rev&&r.o&&!/DTD/.test(r.av)&&r.conf!='Baja'&&r.p1>=.5);if(C0.length<4)C0=X.R.filter(r=>!r.rev&&r.o&&r.p1>=.4);
+C0.forEach(r=>r.s=sc(r));C0.sort((a,b)=>b.s-a.s);
+const T=[],gm=new Set(),gk=r=>[r.T,r.o].sort().join('-');
+for(const r of C0){if(!gm.has(gk(r))){gm.add(gk(r));T.push(r)}if(T.length==4)break}
+for(const r of C0){if(T.length>=4)break;if(!T.includes(r))T.push(r)}
+let S=null,A=null;for(const a of T){if(a.u!='PP1')continue;const b=C0.find(r=>!T.includes(r)&&r.T==a.T&&r.u=='PP1'&&r.p1>=.55);if(b&&(!S||b.s>S.s)){S=b;A=a}}
+const L=S?[...T,S]:T,pi=L.reduce((s,r)=>s*r.p1,1),pj=S?pi/(A.p1*S.p1)*(A.p1*S.p1+.15*Math.sqrt(A.p1*(1-A.p1)*S.p1*(1-S.p1))):pi;
+CUR={L:L.map(r=>({n:r.name,t:r.T,o:r.o,p:r.p1,r:null,s:r===S?1:0})),pi,pj};const why=r=>[(r.h?'vs ':'@ ')+r.o,r.gs!=null?'portero rival GSAA '+r.gs.toFixed(2):'',r.d!=null&&r.k!=null?'Def/PK rival '+Math.round(r.d*100)+'/'+Math.round(r.k*100):'',r.u?r.u+' ('+r.t4.toFixed(1)+' min 5v4)':'',r.t5.toFixed(1)+' min 5v5',r.conf=='Alta'?'datos sólidos':''].filter(Boolean).join(' · ');
+const row=(r,i,tag)=>`<tr><td>${i}</td><td>${esc(r.name)}</td><td>${r.T}</td><td>${esc(tag)}</td><td><b>${pc(r.p1)}</b></td><td>${am(r.p1)}</td><td>${am(r.p1/1.05)}</td><td style="white-space:normal;min-width:320px">${esc(why(r))}</td></tr>`;
+const k=(a,b,c)=>`<div class="k"><small>${a}</small><b>${b}</b><br><span>${c||'&nbsp;'}</span></div>`,alt=C0.filter(r=>!L.includes(r)).slice(0,3);
+return`<div class="kp">${k('Selecciones',L.length,'Over 0.5 puntos (1 o más)')}${k('Prob. independiente',pc(pi),'cuota justa '+am(pi))}${k('Prob. con sinergia',pc(pj),S?'cuota justa '+am(pj):'sin pareja de sinergia hoy')}${k('Partidos distintos',new Set(L.map(gk)).size,'diversificar baja la correlación')}</div>
+<div class="tw"><table style="min-width:900px"><thead><tr><th>#</th><th>Jugador</th><th>Eq.</th><th>Rol</th><th>P(≥1 pt)</th><th>Cuota justa</th><th>Juega si cuota ≥</th><th>Por qué</th></tr></thead><tbody>${L.map((r,i)=>row(r,i+1,r===S?'Sinergia con '+A.name:'Base')).join('')}</tbody></table></div>
+${alt.length?`<h2>Suplentes</h2><div class="tw"><table style="min-width:900px"><tbody>${alt.map((r,i)=>row(r,'S'+(i+1),'Suplente')).join('')}</tbody></table></div>`:''}
+${logv('claude')}
+<p class="m">Criterio: jugadores sin aviso REVISAR ni DTD, confianza media o alta y probabilidad de ≥1 punto de al menos 50%. Se ordenan por probabilidad más bonos por rival débil (Def y PK), portero rival con GSAA negativo, unidad PP1 y datos sólidos. Las 4 selecciones base salen de partidos distintos para que no dependan entre sí. La sinergia suma a un compañero de PP1 del mismo equipo (ambos ≥55%), porque comparten los mismos goles del power play. Su probabilidad conjunta usa una correlación de 0.15, un supuesto mío y no medido. Juega la selección solo si la cuota del libro es igual o mayor a "Juega si cuota ≥" (cuota justa más 5% de margen). Pronóstico estadístico, no garantía de resultado.</p>`}
+const DB={claude:[],mine:[]};let dbh=null,CUR=null,MY=[],LR=[];
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function stat(a){let n=0,h=0,e=0,b=0,tn=0,tw=0;for(const t of a){let all=t.legs.length>0,win=true;for(const l of t.legs){if(l.r==null){all=false;continue}n++;h+=l.r;e+=l.p;b+=(l.p-l.r)**2;if(!l.r)win=false}if(all){tn++;if(win)tw++}}return{n,h,e,b:n?b/n:0,tn,tw}}
+function logv(c){if(!dbh)return`<div class="al"><div>El registro necesita abrir el artefacto en claude.ai con sesión iniciada.</div></div>`;
+const a=DB[c].slice().sort((x,y)=>x.d<y.d?1:x.d>y.d?-1:(y.c||0)-(x.c||0)),s=stat(a),k=(t,b,u)=>`<div class="k"><small>${t}</small><b>${b}</b><br><span>${u||'&nbsp;'}</span></div>`;
+return`<h2>Registro de aciertos${c=='claude'?' de Claude Props NHL':' de mis tickets'}</h2>${c=='claude'&&CUR?`<div class="ct"><button data-a="save">Guardar ticket de hoy (${today()})</button><span class="m">Se guarda tal como está ahora; mientras no marques resultados puedes volver a guardarlo.</span></div>`:''}
+<div class="kp">${k('Selecciones resueltas',s.n)}${k('Aciertos',s.n?s.h+'/'+s.n+' ('+pc(s.h/s.n)+')':'–')}${k('Esperado por el modelo',s.n?pc(s.e/s.n):'–','probabilidad media')}${k('Tickets ganados',s.tw+'/'+s.tn,'todas las selecciones')}${k('Brier',s.n?s.b.toFixed(3):'–','menor es mejor; 0.25 = azar')}</div>
+${a.length?a.map(t=>`<div class="tw" style="margin-bottom:10px"><table style="min-width:640px"><thead><tr><th colspan="5" style="text-align:left">${esc(t.d)}${t.name?' · '+esc(t.name):''} · P combinada ${pc(t.pi||0)}${t.pj&&t.pj!=t.pi?' (con sinergia '+pc(t.pj)+')':''} <button data-a="del" data-c="${c}" data-i="${t.id}">Borrar</button></th></tr></thead><tbody>${t.legs.map((l,j)=>`<tr><td>${esc(l.n)}</td><td>${esc(l.t)}</td><td>${l.o?esc(l.o):'–'}</td><td>${pc(l.p)}</td><td><button data-a="res" data-c="${c}" data-i="${t.id}" data-l="${j}" data-v="1" class="${l.r===1?'yes':''}">✓ Acertó</button> <button data-a="res" data-c="${c}" data-i="${t.id}" data-l="${j}" data-v="0" class="${l.r===0?'nok':''}">✗ Falló</button></td></tr>`).join('')}</tbody></table></div>`).join(''):'<p class="m">Aún no hay tickets guardados.</p>'}`}
+function mi(){const X=run();if(!X||!X.G)return`<div class="al"><div>Carga Jugadores 5v5, Jugadores 5v4 y los partidos del día para armar tu ticket.</div></div>`;
+LR=X.R.filter(r=>r.o&&!r.rev).sort((a,b)=>b.p1-a.p1).slice(0,150);const pr=MY.reduce((s,l)=>s*l.p,1),k=(t,b,u)=>`<div class="k"><small>${t}</small><b>${b}</b><br><span>${u||'&nbsp;'}</span></div>`;
+return`<div class="ct"><select id="ms">${LR.map((r,i)=>`<option value="${i}">${esc(r.name)} (${r.T} ${r.h?'vs':'@'} ${r.o}) · ${pc(r.p1)}</option>`).join('')}</select><button data-a="add">Añadir al ticket</button></div>
+<div class="kp">${k('Selecciones',MY.length,'Over 0.5 puntos (1 o más)')}${k('Prob. combinada',MY.length?pc(pr):'–','suponiendo independencia')}${k('Cuota justa combinada',MY.length?am(pr):'–')}</div>
+${MY.length?`<div class="tw"><table style="min-width:640px"><thead><tr><th>Jugador</th><th>Eq.</th><th>Rival</th><th>P(≥1 pt)</th><th></th></tr></thead><tbody>${MY.map((l,i)=>`<tr><td>${esc(l.n)}</td><td>${esc(l.t)}</td><td>${esc(l.o)}</td><td>${pc(l.p)}</td><td><button data-a="rm" data-l="${i}">Quitar</button></td></tr>`).join('')}</tbody></table></div><div class="ct" style="margin-top:10px"><input type="text" id="mn" placeholder="Nombre del ticket"><button data-a="savemine">Guardar ticket (${today()})</button></div>`:'<p class="m">Elige jugadores de la lista para armar tu ticket. Las probabilidades salen del modelo con los datos cargados.</p>'}
+${logv('mine')}`}
+async function act(e){const b=e.target.closest('button[data-a]');if(!b)return;const a=b.dataset.a;if(a=='add'){const r=LR[+($('#ms')||{}).value];if(r&&!MY.some(l=>l.n==r.name))MY.push({n:r.name,t:r.T,o:r.o,p:r.p1,r:null});return render()}if(a=='rm'){MY.splice(+b.dataset.l,1);return render()}if(!dbh)return;
+try{if(a=='save'&&CUR){const id=today(),ex=DB.claude.find(t=>t.id==id);if(ex&&ex.legs.some(l=>l.r!=null)){alert('El ticket de hoy ya tiene resultados y no se sobrescribe.');return}await dbh.doc('claude/'+id).set({d:id,legs:CUR.L,pi:CUR.pi,pj:CUR.pj,c:Date.now()})}
+else if(a=='res'){const c=b.dataset.c,t=DB[c].find(x=>x.id==b.dataset.i),j=+b.dataset.l,v=+b.dataset.v;await dbh.doc(c+'/'+t.id).update({legs:t.legs.map((l,i)=>i==j?{...l,r:l.r===v?null:v}:l)})}
+else if(a=='savemine'&&MY.length){const id=today()+'-'+Date.now().toString(36);await dbh.doc('mine/'+id).set({d:today(),name:($('#mn')||{}).value||'Mi ticket',legs:MY.map(l=>({...l})),pi:MY.reduce((s,l)=>s*l.p,1),c:Date.now()});MY=[];render()}
+else if(a=='del'&&confirm('¿Borrar este ticket?'))await dbh.doc(b.dataset.c+'/'+b.dataset.i).delete()}catch(err){alert('No se pudo guardar: '+(err&&err.message||err))}}
+function data(){return`<h2>Cargar archivos CSV (separados por comas)</h2><p class="m">Exporta cada hoja de tu Excel como CSV con la misma fila de encabezados. Los archivos se procesan en tu navegador y se guardan en este dispositivo. Obligatorios: Jugadores 5v5 y Jugadores 5v4. Sin H to H ni unidades PP se calcula toda la liga sin rival; con H to H se activan rival y portero, y con las unidades PP, el rol y las lesiones.</p>
+<div class="grid">${SL.map(([k,l,h])=>`<div class="cd"><b>${l}</b><small>Hoja de origen: ${h}</small><div class="${D[k]?'ok':'no'}">${D[k]?'✓ '+D[k].n+(k=='un'?' partidos':' filas')+' cargadas':'Sin cargar'}</div><input type="file" accept=".csv,text/csv" data-k="${k}"></div>`).join('')}</div>
+<h2>Jugadores excluidos (uno por línea)</h2><p class="m">Además de los marcados IR, IR-LT u OUT en las unidades de power play.</p><textarea id="ex" rows="4" cols="40">${esc(st.g('ex')||'')}</textarea>
+<h2>Formato de unidades PP</h2><p class="m">Columnas: Partido, Equipo, Tipo, Nombre / Unidad, Estado / C, LW, RW, LD, RD (acepta también el CSV con punto y coma de Excel en español y su codificación con acentos). Por partido, primero el equipo visitante y luego el local. Filas Tipo = Portero, PP1 y PP2. Etiquetas IR, IR-LT, DTD y OUT al final del nombre.</p>`}
+function met(){return`<h2>Cómo se calcula</h2><ul><li>Solo 5v5 y 5v4. Pts/60 esperado = goles + A1 regresada + A2 por rol. Los puntos reales nunca son predictor.</li><li>Índice de tiro con Shots 50%, iSCF 30%, ixG 10%, iHDCF 10% en 5v5 (pesos reajustados fuera de muestra con la temporada pasada). Tope 3.0 y regresión a la media.</li><li>Prior histórico (temporada pasada) con 60% de peso por minuto, finishing incluido en goles, K de A1 estimadas entre temporadas.</li><li>5v4: TOI según unidad (PP1 ≈ 67% del tiempo de PP del equipo, PP2 ≈ 39%), minutos de PP = promedio entre PP del equipo y PK del rival.</li><li>Rival: índice defensivo 5v5 y de penal killing (xGA 35%, HDCA 15%, SCA 15%, SA 15%, GA 20%) regresado, más portero rival con GSAA/60 contraído (máx. ±10%).</li><li>Disponibilidad: IR, IR-LT y OUT se excluyen; jugadores con rol grande en 5v4 que no aparecen en las unidades quedan como REVISAR.</li></ul><h2>Limitaciones</h2><ul><li>No incluye localía, back-to-back, calidad del power play propio ni líneas de apuestas.</li><li>Con ~18 partidos goles y asistencias son sobre todo ruido: por eso se regresa a la media.</li><li>La prueba real de acierto exige guardar los pronósticos diarios y compararlos con los puntos reales posteriores.</li></ul>`}
+function render(){$('#nav').innerHTML=[['dash','Dashboard'],['tk','Ticket'],['cl','Claude Props NHL'],['mi','Mi ticket'],['data','Cargar datos'],['met','Metodología']].map(([k,l])=>`<button class="${tab==k?'on':''}" data-t="${k}">${l}</button>`).join('');$('#app').innerHTML=tab=='dash'?dash():tab=='tk'?tk():tab=='cl'?cp():tab=='mi'?mi():tab=='data'?data():met();
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render()});
+document.querySelectorAll('input[type=file]').forEach(i=>i.onchange=async e=>{const f=e.target.files[0];if(f)await load(i.dataset.k,await rd(f))});
+const bind=(id,fn)=>{const e=$(id);if(e)e.onchange=()=>{fn(e);render()}};bind('#cn',e=>C.n=+e.value);bind('#ct',e=>C.team=e.value);bind('#cr',e=>C.rev=e.checked);
+const q=$('#cq');if(q)q.onchange=()=>{C.q=q.value;render()};const x=$('#ex');if(x)x.onchange=()=>{st.s('ex',x.value)};document.querySelectorAll('th[data-s]').forEach(h=>h.onclick=()=>{const k=h.dataset.s;if(C.sk==k)C.sd*=-1;else{C.sk=k;C.sd=CD.find(c=>c.k==k).t=='t'?1:-1}render()});document.querySelectorAll('.fi').forEach(i=>i.onchange=()=>{C.f[i.dataset.f]=i.value;render()});const cx=$('#cx');if(cx)cx.onclick=()=>{C.f={};C.q='';C.team='';render()};document.querySelectorAll('.ti').forEach(i=>i.onchange=()=>{const v=parseFloat(i.value.replace(',','.'));if(!isNaN(v))TK[i.dataset.k]=v;render()})}
+const $=s=>document.querySelector(s);
+for(const[k]of SL){const t=st.g(k);if(t){try{D[k]={n:parse(k,t)}}catch(e){}}}
+render();
+$('#app').addEventListener('click',act);(async()=>{try{const db=await claude.use('db');if(!db)return;dbh=db;for(const c of['claude','mine'])db.collection(c).onSnapshot(s=>{DB[c]=s.docs.map(d=>({id:d.id,...d.data()}));if(tab=='cl'||tab=='mi')render()},()=>{});render()}catch(e){}})();
+</script></body></html>
